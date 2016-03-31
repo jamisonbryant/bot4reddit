@@ -526,23 +526,58 @@ a.button {
   line-height: 1.2;
   color: #fff;
 }
+
 a.button small {
   display: block;
   font-size: 11px;
 }
+
 header a.button {
   position: absolute;
   top: 0;
   right: 0;
   background: transparent url(../images/github-button.png) 0 0 no-repeat;
 }
+
 aside a.button {
   display: block;
   width: 138px;
   padding-left: 64px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   font-size: 21px;
   background: transparent url(../images/download-button.png) 0 0 no-repeat;
+}
+
+aside a.link {
+  display: block;
+  background: #b8b8b8;
+  background-image: -webkit-linear-gradient(top, #aaaaaa 0%, #888888 47%, #666666 100%);
+  background-image: -moz-linear-gradient(top, #aaaaaa 0%, #888888 47%, #666666 100%);
+  background-image: -ms-linear-gradient(top, #aaaaaa 0%, #888888 47%, #666666 100%);
+  background-image: -o-linear-gradient(top, #aaaaaa 0%, #888888 47%, #666666 100%);
+  background-image: linear-gradient(to bottom, #aaaaaa 0%, #888888 47%, #666666 100%);
+  border: 2px solid #dedede;
+  border-radius: 5px;
+  font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif;
+  color: #ffffff;
+  font-size: 21px;
+  padding: 10px 20px 10px 15px;
+  text-decoration: none;
+  text-shadow: 1px 1px #777777;
+  width: 165px;
+  margin-bottom: 10px;
+}
+
+aside a.link:hover {
+  text-decoration: none;
+}
+
+aside a.link.active {
+  color: yellow;
+}
+
+aside a.link.active:before {
+  content: '* ';
 }
 
 code, pre {
