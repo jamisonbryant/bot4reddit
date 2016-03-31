@@ -23,6 +23,7 @@
   "homepage": "http://robojamison.github.io/bot4reddit",
   "dependencies": {
     "botbuilder": "^0.6.0",
+    "dotenv": "^2.0.0",
     "restify": "^4.0.4"
   }
 }
