@@ -12,19 +12,27 @@ var redditBot = new builder.BotConnectorBot({
     appSecret: process.env.APP_SECRET
 });
 
-// Add default dialog
-redditBot.add('/', function(session) {
-    if (!session.userData.name) {
-        session.beginDialog('/profile');
-    } else {
-        session.send('Hello %s!', session.userData.name);
-    }
-});
+// Add command dialog
+redditBot.add('/', new builder.CommandDialog()
+    .matches('^set name', builder.DialogAction.beginDialog('/profile'))
+    .matches('^quit', builder.DialogAction.endDialog())
+    .onDefault(function(session) {
+        if (!session.userData.name) {
+            session.beginDialog('/profile');
+        } else {
+            session.send('Hello %s!', session.userData.name);
+        }
+    })
+);
 
 // Add profile dialog
 redditBot.add('/profile', [
     function(session) {
-        builder.Prompts.text(session, 'Hi! What is your name?');
+        if (session.userData.name) {
+            builder.Prompts.text(session, 'What would you like to change it to?');
+        } else {
+            builder.Prompts.text(session, 'Hi! What is your name?');
+        }
     },
     function(session, results) {
         session.userData.name = results.response;
