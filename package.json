@@ -1,5 +1,5 @@
 {
-  "name": "redditbot",
+  "name": "bot4reddit",
   "version": "0.1.0",
   "description": "A bot for reading reddit using the reddit API and Microsoft's new Bot Builder",
   "main": "app.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/robojamison/redditbot.git"
+    "url": "git+https://github.com/robojamison/bot4reddit.git"
   },
   "keywords": [
     "reddit",
@@ -18,9 +18,9 @@
   "author": "Jamison Bryant <robojamison@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/robojamison/redditbot/issues"
+    "url": "https://github.com/robojamison/bot4reddit/issues"
   },
-  "homepage": "https://github.com/robojamison/redditbot#readme",
+  "homepage": "http://robojamison.github.io/bot4reddit",
   "dependencies": {
     "botbuilder": "^0.6.0",
     "restify": "^4.0.4"
