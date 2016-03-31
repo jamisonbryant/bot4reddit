@@ -16,7 +16,7 @@ var redditBot = new builder.BotConnectorBot({
 redditBot.add('/', new builder.CommandDialog()
     .matches('^set name', builder.DialogAction.beginDialog('/profile'))
     .matches('^quit', builder.DialogAction.endDialog())
-    .onDefault(function (session) {
+    .onDefault(function(session) {
         if (!session.userData.name) {
             session.beginDialog('/profile');
         } else {
@@ -27,14 +27,14 @@ redditBot.add('/', new builder.CommandDialog()
 
 // Add profile dialog
 redditBot.add('/profile',  [
-    function (session) {
+    function(session) {
         if (session.userData.name) {
             builder.Prompts.text(session, 'What would you like to change it to?');
         } else {
             builder.Prompts.text(session, 'Hi! What is your name?');
         }
     },
-    function (session, results) {
+    function(session, results) {
         session.userData.name = results.response;
         session.endDialog();
     }
