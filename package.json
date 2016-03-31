@@ -1,6 +1,6 @@
 {
   "name": "bot4reddit",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A bot for reading reddit using the reddit API and Microsoft's new Bot Builder",
   "main": "app.js",
   "scripts": {
