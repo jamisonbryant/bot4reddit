@@ -1,6 +1,6 @@
 {
-  "name": "bot4reddit",
+  "name": "Bot for Reddit",
   "tagline": "A bot for reading reddit using the reddit API and Microsoft's new Bot Builder",
-  "body": "# bot4reddit\r\nContent will be added soon.",
+  "body": "# Bot for Reddit\r\nA bot for reading reddit using the reddit API and Microsoft's new Bot Builder\r\n",
   "note": "Don't delete this file! It's used internally to help with page regeneration."
 }
