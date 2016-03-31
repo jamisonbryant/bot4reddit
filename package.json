@@ -1,0 +1,28 @@
+{
+  "name": "redditbot",
+  "version": "0.1.0",
+  "description": "A bot for reading reddit using the reddit API and Microsoft's new Bot Builder",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/robojamison/redditbot.git"
+  },
+  "keywords": [
+    "reddit",
+    "bot",
+    "microsoft"
+  ],
+  "author": "Jamison Bryant <robojamison@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/robojamison/redditbot/issues"
+  },
+  "homepage": "https://github.com/robojamison/redditbot#readme",
+  "dependencies": {
+    "botbuilder": "^0.6.0",
+    "restify": "^4.0.4"
+  }
+}
