@@ -18,20 +18,30 @@ redditBot.add('/', dialog);
 
 // Handle BrowseSubreddit intent
 dialog.on('BrowseSubreddit', [
-    function(session, args, next) {
-        // Get entities from response
-        var subredditName = builder.EntityRecognizer.findEntity(args.entities, 'SubredditName');
-        var timePeriod = builder.EntityRecognizer.findEntity(args.entities, 'TimePeriod');
-        var postFilter = builder.EntityRecognizer.findEntity(args.entities, 'PostFilter');
+    function(session, args) {
+        console.log(args.entities);
 
-        // Display something cool to the user
-        var subredditNameStr = subredditName.entity.toString() || '<??SUBREDDIT??>';
-        var timePeriodStr = timePeriod.entity.toString() || '<??TIMEPERIOD??>';
-        var postFilterStr = postFilter.entity.toString() || '<??POSTFILTER??>';
+        var subredditNameEntity = builder.EntityRecognizer.findEntity(args.entities, 'SubredditName');
+        var postPopularityEntity = builder.EntityRecognizer.findEntity(args.entities, 'PostPopularity');
+        var postTypeEntity = builder.EntityRecognizer.findEntity(args.entities, 'PostType');
+        var timePeriodEntity = builder.EntityRecognizer.findEntity(args.entities, 'TimePeriod');
 
-        subredditNameStr = subredditName.entity.replace(/\s/g, '');
-        //console.log(subredditNameStr + "," + timePeriodStr + "," + postFilterStr);
-        console.log(subredditNameStr + "," + timePeriodStr);
+        // console.log(subredditNameEntity);
+        // console.log(postPopularityEntity);
+        // console.log(postTypeEntity);
+        // console.log(timePeriodEntity);
+
+        var subredditName = subredditNameEntity.entity.replace(/\s/g, '').toUpperCase();
+        var postPopularity = postPopularityEntity.entity.toUpperCase();
+        var postType = postTypeEntity.entity.toUpperCase();
+        var timePeriod = timePeriodEntity.entity.toUpperCase();
+
+        // console.log('Subreddit name: ' + subredditName);
+        // console.log('Post popularity: ' + postPopularity);
+        // console.log('Post type: ' + postType);
+        // console.log('Time period: ' + timePeriod);
+
+        // session.send('Showing you the ' + postPopularity + ' ' + postType + ' from ' + subredditName + ' for ' + timePeriod);
     }
 ]);
 

@@ -24,6 +24,7 @@
   "dependencies": {
     "botbuilder": "^0.6.0",
     "dotenv": "^2.0.0",
-    "restify": "^4.0.4"
+    "restify": "^4.0.4",
+    "sprintf-js": "^1.0.3"
   }
 }
