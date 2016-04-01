@@ -1,0 +1,24 @@
+what's hot on /r/foo
+what's new on /r/foo
+what's rising on /r/foo
+show me the hot posts on /r/foo
+show me the new posts on /r/foo
+show me the rising posts on /r/foo
+show me the top posts on /r/foo of all time
+show me the top posts on /r/foo for the past 24 hours
+show me the top posts on /r/foo for the past day
+show me the top posts on /r/foo for the past week
+show me the top posts on /r/foo for the past month
+show me the top posts on /r/foo for the past year
+what's hot on /m/foo
+what's new on /m/foo
+what's rising on /m/foo
+show me the hot posts on /m/foo
+show me the new posts on /m/foo
+show me the rising posts on /m/foo
+show me the top posts on /m/foo of all time
+show me the top posts on /m/foo for the past 24 hours
+show me the top posts on /m/foo for the past day
+show me the top posts on /m/foo for the past week
+show me the top posts on /m/foo for the past month
+show me the top posts on /m/foo for the past year

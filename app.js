@@ -1,10 +1,9 @@
 // Load dependencies
-var dotenv = require('dotenv');
 var restify = require('restify');
 var builder = require('botbuilder');
 
 // Configure environment
-dotenv.config();
+require('dotenv').config();
 
 // Create bot
 var redditBot = new builder.BotConnectorBot({
@@ -12,33 +11,31 @@ var redditBot = new builder.BotConnectorBot({
     appSecret: process.env.APP_SECRET
 });
 
-// Add command dialog
-redditBot.add('/', new builder.CommandDialog()
-    .matches('^set name', builder.DialogAction.beginDialog('/profile'))
-    .matches('^quit', builder.DialogAction.endDialog())
-    .onDefault(function(session) {
-        if (!session.userData.name) {
-            session.beginDialog('/profile');
-        } else {
-            session.send('Hello %s!', session.userData.name);
-        }
-    })
-);
+// Create LUIS dialog
+var model = process.env.LUIS_URL;
+var dialog = new builder.LuisDialog(model);
+redditBot.add('/', dialog);
 
-// Add profile dialog
-redditBot.add('/profile',  [
-    function(session) {
-        if (session.userData.name) {
-            builder.Prompts.text(session, 'What would you like to change it to?');
-        } else {
-            builder.Prompts.text(session, 'Hi! What is your name?');
-        }
-    },
-    function(session, results) {
-        session.userData.name = results.response;
-        session.endDialog();
+// Handle BrowseSubreddit intent
+dialog.on('BrowseSubreddit', [
+    function(session, args, next) {
+        // Get entities from response
+        var subredditName = builder.EntityRecognizer.findEntity(args.entities, 'SubredditName');
+        var timePeriod = builder.EntityRecognizer.findEntity(args.entities, 'TimePeriod');
+        var postFilter = builder.EntityRecognizer.findEntity(args.entities, 'PostFilter');
+
+        // Display something cool to the user
+        var subredditNameStr = subredditName.entity.toString() || '<??SUBREDDIT??>';
+        var timePeriodStr = timePeriod.entity.toString() || '<??TIMEPERIOD??>';
+        var postFilterStr = postFilter.entity.toString() || '<??POSTFILTER??>';
+
+        subredditNameStr = subredditName.entity.replace(/\s/g, '');
+        //console.log(subredditNameStr + "," + timePeriodStr + "," + postFilterStr);
+        console.log(subredditNameStr + "," + timePeriodStr);
     }
 ]);
+
+dialog.onDefault(builder.DialogAction.send("Sorry, I didn't catch that. Say again?"));
 
 // Set up and start Restify server
 var server = restify.createServer();
