@@ -1,2 +1,6 @@
 # Bot for Reddit
-A bot for reading reddit using the reddit API and Microsoft's new Bot Builder
+A bot for browsing Reddit using the Reddit API and the Microsoft Bot Framework 
+announced at Microsoft's [Build Developer Conference 2016][1].
+
+
+[1]: https://build.microsoft.com

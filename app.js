@@ -1,56 +1,41 @@
+const VERSION_MAJOR = 0;
+const VERSION_MINOR = 2;
+const VERSION_PATCH = 0;
+const COPYRIGHT_HOLDER = 'Jamison Bryant';
+const APP_SITE_URL = 'https://robojamison.github.io/bot4reddit';
+const APP_REPO_URL = 'https://github.com/robojamison/bot4reddit';
+
 // Load dependencies
-var restify = require('restify');
-var builder = require('botbuilder');
+var sprintf = require('sprintf-js');   // For printing strings
 
-// Configure environment
-require('dotenv').config();
-
-// Create bot
-var redditBot = new builder.BotConnectorBot({
-    appId: process.env.APP_ID,
-    appSecret: process.env.APP_SECRET
-});
-
-// Create LUIS dialog
-var model = process.env.LUIS_URL;
-var dialog = new builder.LuisDialog(model);
-redditBot.add('/', dialog);
-
-// Handle BrowseSubreddit intent
-dialog.on('BrowseSubreddit', [
-    function(session, args) {
-        console.log(args.entities);
-
-        var subredditNameEntity = builder.EntityRecognizer.findEntity(args.entities, 'SubredditName');
-        var postPopularityEntity = builder.EntityRecognizer.findEntity(args.entities, 'PostPopularity');
-        var postTypeEntity = builder.EntityRecognizer.findEntity(args.entities, 'PostType');
-        var timePeriodEntity = builder.EntityRecognizer.findEntity(args.entities, 'TimePeriod');
-
-        // console.log(subredditNameEntity);
-        // console.log(postPopularityEntity);
-        // console.log(postTypeEntity);
-        // console.log(timePeriodEntity);
-
-        var subredditName = subredditNameEntity.entity.replace(/\s/g, '').toUpperCase();
-        var postPopularity = postPopularityEntity.entity.toUpperCase();
-        var postType = postTypeEntity.entity.toUpperCase();
-        var timePeriod = timePeriodEntity.entity.toUpperCase();
-
-        // console.log('Subreddit name: ' + subredditName);
-        // console.log('Post popularity: ' + postPopularity);
-        // console.log('Post type: ' + postType);
-        // console.log('Time period: ' + timePeriod);
-
-        // session.send('Showing you the ' + postPopularity + ' ' + postType + ' from ' + subredditName + ' for ' + timePeriod);
+module.exports = {
+    /**
+     * Returns the application's version number as a string.
+     */
+    getVersion: function() {
+        return sprintf.sprintf('v%d.%d.%d', 
+            VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH);
+    },
+    
+    /**
+     * Returns the application's copyright information as a string.
+     */
+    getCopyright: function() {
+        return sprintf.sprintf('%d %s', 
+            new Date().getFullYear(), COPYRIGHT_HOLDER);
+    },
+    
+    /**
+     * Returns the application's website URL as a string.
+     */
+    getSiteUrl: function() {
+        return APP_SITE_URL;
+    },
+    
+    /**
+     * Returns the application's repo URL as a string.
+     */
+    getRepoUrl: function() {
+        return APP_REPO_URL;
     }
-]);
-
-dialog.onDefault(builder.DialogAction.send("Sorry, I didn't catch that. Say again?"));
-
-// Set up and start Restify server
-var server = restify.createServer();
-server.post('/api/messages', redditBot.verifyBotFramework(), redditBot.listen());
-
-server.listen(process.env.port || 3978, function() {
-    console.log('%s listening to %s', server.name, server.url);
-});
+};

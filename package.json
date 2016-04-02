@@ -2,7 +2,7 @@
   "name": "bot4reddit",
   "version": "0.2.0",
   "description": "A bot for reading reddit using the reddit API and Microsoft's new Bot Builder",
-  "main": "app.js",
+  "main": "bot.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -25,6 +25,8 @@
     "botbuilder": "^0.6.0",
     "dotenv": "^2.0.0",
     "restify": "^4.0.4",
-    "sprintf-js": "^1.0.3"
+    "snoowrap": "^0.10.1",
+    "sprintf-js": "^1.0.3",
+    "winston": "^2.2.0"
   }
 }
