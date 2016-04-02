@@ -28,11 +28,13 @@ var filesys = require('fs');            // For examining the file system
 // Load local modules
 var appcore = require('./app');         // For application core functions
 
+// Coupl'a hacks real quick...
+sprintf = sprintf.sprintf;              // We only use the sprintf function...
+
 // Display welcome message
-console.log(sprintf.sprintf('Bot4Reddit %s. Copyright (c) %s', 
+console.log(sprintf('Bot4Reddit %s. Copyright (c) %s.', 
     appcore.getVersion(), appcore.getCopyright()));
-console.log(sprintf.sprintf('Learn more at %s', 
-    appcore.getSiteUrl()));
+console.log(sprintf('Learn more at %s', appcore.getSiteUrl()));
 
 // Load environment variables
 try {
@@ -40,7 +42,8 @@ try {
     winston.info('Loading environment config file...');    
     require('dotenv').config();
 } catch (e) {
-    winston.error('Environment config file not found! (error 350)');
+    winston.error(sprintf('Environment config file not found (error %d)', 
+        appcore.ERROR_DOTENV_FILE_NOT_FOUND));
     process.exit(1);
 }
 

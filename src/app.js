@@ -1,6 +1,20 @@
+/**
+ * app.js - Common application functions and constants
+ * 
+ * @author Jamison Bryant <robojamison@gmail.com>
+ * @copyright Copyright (c) 2016 Jamison Bryant
+ * @license MIT License (https://opensource.org/licenses/MIT)
+ */
+
+// Version constants
 const VERSION_MAJOR = 0;
 const VERSION_MINOR = 3;
 const VERSION_PATCH = 0;
+
+// Error constants
+const ERROR_DOTENV_FILE_NOT_FOUND = 100;
+
+// Miscellaneous constants
 const COPYRIGHT_HOLDER = 'Jamison Bryant';
 const APP_SITE_URL = 'https://robojamison.github.io/bot4reddit';
 const APP_REPO_URL = 'https://github.com/robojamison/bot4reddit';
@@ -9,6 +23,11 @@ const APP_REPO_URL = 'https://github.com/robojamison/bot4reddit';
 var sprintf = require('sprintf-js');   // For printing strings
 
 module.exports = {
+    /*
+     * Define constants we export
+     */
+    ERROR_DOTENV_FILE_NOT_FOUND: ERROR_DOTENV_FILE_NOT_FOUND,
+    
     /**
      * Returns the application's version number as a string.
      */
