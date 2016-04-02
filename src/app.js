@@ -14,6 +14,9 @@ const VERSION_PATCH = 0;
 // Error constants
 const ERROR_DOTENV_FILE_NOT_FOUND = 100;
 
+// Server constants
+const SERVER_PORT = 3978;
+
 // Miscellaneous constants
 const COPYRIGHT_HOLDER = 'Jamison Bryant';
 const APP_SITE_URL = 'https://robojamison.github.io/bot4reddit';
@@ -21,12 +24,25 @@ const APP_REPO_URL = 'https://github.com/robojamison/bot4reddit';
 
 // Load dependencies
 var sprintf = require('sprintf-js');   // For printing strings
+var builder = require('botbuilder');    // For integrating with Bot Framework
 
 module.exports = {
     /*
      * Define constants we export
      */
     ERROR_DOTENV_FILE_NOT_FOUND: ERROR_DOTENV_FILE_NOT_FOUND,
+    SERVER_PORT: SERVER_PORT,
+    
+    /**
+     * Returns the value of an entity as a string, or an empty string if the 
+     * entity was not present.
+     * 
+     * @param {}
+     */
+    getEntity: function(entities, name) {
+        var entityObject = builder.EntityRecognizer.findEntity(entities, name);
+        return (entityObject != null ? entityObject.entity : 'UNKNOWN');
+    },
     
     /**
      * Returns the application's version number as a string.

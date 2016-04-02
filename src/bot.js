@@ -21,85 +21,79 @@ var builder = require('botbuilder');    // For integrating with Bot Framework
 var restify = require('restify');       // For capturing incoming messages
 var sprintf = require('sprintf-js');    // For printing strings
 var winston = require('winston');       // For logging
-
-// Load Node.js modules
 var filesys = require('fs');            // For examining the file system
-
-// Load local modules
 var appcore = require('./app');         // For application core functions
 
-// Coupl'a hacks real quick...
-sprintf = sprintf.sprintf;              // We only use the sprintf function...
+// Define aliases
+spf = sprintf.sprintf;                  // spf -> sprintf.sprintf
 
 // Display welcome message
-console.log(sprintf('Bot4Reddit %s. Copyright (c) %s.', 
+console.log(spf('Bot4Reddit %s. Copyright (c) %s.', 
     appcore.getVersion(), appcore.getCopyright()));
-console.log(sprintf('Learn more at %s', appcore.getSiteUrl()));
+console.log(spf('Learn more at %s', appcore.getSiteUrl()));
 
-// Load environment variables
+// Configure logging
+var logger = new winston.Logger({
+    transports: [
+        new winston.transports.Console({ level: 'debug' }),
+        //new winston.transports.File({ filename: 'debug.log' })
+    ]
+});
+
+// Configure environment (or try to)
 try {
     filesys.accessSync('.env', filesys.F_OK);
-    winston.info('Loading environment config file...');    
+    logger.info('Loading environment config file...');    
     require('dotenv').config();
 } catch (e) {
-    winston.error(sprintf('Environment config file not found (error %d)', 
+    logger.error(spf('Environment config file not found (error %d)', 
         appcore.ERROR_DOTENV_FILE_NOT_FOUND));
     process.exit(1);
 }
 
-// // Load dependencies
-// var restify = require('restify');
-// var builder = require('botbuilder');
+// Create Reddit bot
+var bot = new builder.BotConnectorBot({
+    appId: process.env.APP_ID,
+    appSecret: process.env.APP_SECRET
+});
 
-// // Configure environment
-// require('dotenv').config();
+// Create LUIS dialog
+var model = process.env.LUIS_URL;
+var dialog = new builder.LuisDialog(model);
+bot.add('/', dialog);
 
-// // Create bot
-// var redditBot = new builder.BotConnectorBot({
-//     appId: process.env.APP_ID,
-//     appSecret: process.env.APP_SECRET
-// });
+// Configure and start server
+var server = restify.createServer({ name: 'bot4reddit' });
 
-// // Create LUIS dialog
-// var model = process.env.LUIS_URL;
-// var dialog = new builder.LuisDialog(model);
-// redditBot.add('/', dialog);
+// Start listening for messages
+server.post('/api/messages', bot.verifyBotFramework(), bot.listen());
+server.listen(process.env.port || appcore.SERVER_PORT, function() {
+    logger.info(spf('%s listening on %s', server.name, server.url));
+});
 
-// // Handle BrowseSubreddit intent
-// dialog.on('BrowseSubreddit', [
-//     function(session, args) {
-//         console.log(args.entities);
+// Handle BrowseSubreddit intent
+dialog.on('BrowseSubreddit', [
+    function(session, args) {
+        var subredditName = appcore.getEntity(args.entities, 'SubredditName');
+        var postPopularity = appcore.getEntity(args.entities, 'PostPopularity');
+        var postType = appcore.getEntity(args.entities, 'PostType');
+        var timePeriod = appcore.getEntity(args.entities, 'TimePeriod');
 
-//         var subredditNameEntity = builder.EntityRecognizer.findEntity(args.entities, 'SubredditName');
-//         var postPopularityEntity = builder.EntityRecognizer.findEntity(args.entities, 'PostPopularity');
-//         var postTypeEntity = builder.EntityRecognizer.findEntity(args.entities, 'PostType');
-//         var timePeriodEntity = builder.EntityRecognizer.findEntity(args.entities, 'TimePeriod');
+        var subredditName   = subredditName.replace(/\s/g, '').toUpperCase();
+        var postPopularity  = postPopularity.toUpperCase();
+        var postType        = postType.toUpperCase();
+        var timePeriod      = timePeriod.toUpperCase();
+        
+        logger.debug(spf('Caught BrowseSubreddit intent (entities: %d)',
+            args.entities.length), {
+                'subredditName': subredditName,
+                'postPopularity': postPopularity,
+                'postType': postType,
+                'timePeriod': timePeriod
+            });
 
-//         // console.log(subredditNameEntity);
-//         // console.log(postPopularityEntity);
-//         // console.log(postTypeEntity);
-//         // console.log(timePeriodEntity);
+        // session.send('Showing you the ' + postPopularity + ' ' + postType + ' from ' + subredditName + ' for ' + timePeriod);
+    }
+]);
 
-//         var subredditName = subredditNameEntity.entity.replace(/\s/g, '').toUpperCase();
-//         var postPopularity = postPopularityEntity.entity.toUpperCase();
-//         var postType = postTypeEntity.entity.toUpperCase();
-//         var timePeriod = timePeriodEntity.entity.toUpperCase();
-
-//         // console.log('Subreddit name: ' + subredditName);
-//         // console.log('Post popularity: ' + postPopularity);
-//         // console.log('Post type: ' + postType);
-//         // console.log('Time period: ' + timePeriod);
-
-//         // session.send('Showing you the ' + postPopularity + ' ' + postType + ' from ' + subredditName + ' for ' + timePeriod);
-//     }
-// ]);
-
-// dialog.onDefault(builder.DialogAction.send("Sorry, I didn't catch that. Say again?"));
-
-// // Set up and start Restify server
-// var server = restify.createServer();
-// server.post('/api/messages', redditBot.verifyBotFramework(), redditBot.listen());
-
-// server.listen(process.env.port || 3978, function() {
-//     console.log('%s listening to %s', server.name, server.url);
-// });
+dialog.onDefault(builder.DialogAction.send("Sorry, I didn't catch that. Say again?"));
