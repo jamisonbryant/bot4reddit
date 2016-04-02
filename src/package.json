@@ -1,7 +1,7 @@
 {
   "name": "bot4reddit",
   "version": "0.3.0",
-  "description": "A bot for reading reddit using the reddit API and Microsoft's new Bot Builder",
+  "description": "A bot for browsing Reddit using the Reddit API and the Microsoft Bot Framework",
   "main": "bot.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
