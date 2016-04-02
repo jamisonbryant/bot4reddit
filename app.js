@@ -1,5 +1,5 @@
 const VERSION_MAJOR = 0;
-const VERSION_MINOR = 2;
+const VERSION_MINOR = 3;
 const VERSION_PATCH = 0;
 const COPYRIGHT_HOLDER = 'Jamison Bryant';
 const APP_SITE_URL = 'https://robojamison.github.io/bot4reddit';
