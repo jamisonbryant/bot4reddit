@@ -46,9 +46,13 @@ var postTypes = [
     "links"
 ];
 
-var forumTypes = [
-    "/r/foo", "r/foo",
-    "/m/foo", "m/foo"
+var forumPrefixes = [
+    "/r/", "r/",
+    "/m/", "m/"
+];
+
+var forumNames = [
+    
 ];
 
 var timePeriods = [
@@ -64,10 +68,10 @@ var timePeriods = [
 botCommands.forEach(function(botCommand) {
     postPopularities.forEach(function(postPopularity) {
         postTypes.forEach(function(postType) {
-            forumTypes.forEach(function(forumType) {
+            forumPrefixes.forEach(function(forumPrefix) {
                 timePeriods.forEach(function(timePeriod) {
                     var utterance = sprintf("%s the %s %s on %s for %s",
-                        botCommand, postPopularity, postType, forumType, timePeriod);
+                        botCommand, postPopularity, postType, forumPrefix, timePeriod);
                     console.log(utterance);
                 });
             });
