@@ -24,8 +24,8 @@
   "dependencies": {
     "botbuilder": "^0.6.0",
     "dotenv": "^2.0.0",
+    "redwrap": "0.0.4",
     "restify": "^4.0.4",
-    "snoowrap": "^0.10.1",
     "sprintf-js": "^1.0.3",
     "winston": "^2.2.0"
   }
