@@ -17,18 +17,24 @@
  */
 
 // Load dependencies
+var appcore = require('./app');         // For application core functions
 var builder = require('botbuilder');    // For integrating with Bot Framework
+var filesys = require('fs');            // For examining the file system
+var redwrap = require('redwrap');       // For interfacing with reddit
 var restify = require('restify');       // For capturing incoming messages
 var sprintf = require('sprintf-js');    // For printing strings
 var winston = require('winston');       // For logging
-var filesys = require('fs');            // For examining the file system
-var appcore = require('./app');         // For application core functions
 
 // Define aliases
 spf = sprintf.sprintf;                  // spf -> sprintf.sprintf
 
+// Define some prototypes
+String.prototype.isEmpty = function() {
+    return (this.length === 0);
+};
+
 // Display welcome message
-console.log(spf('Bot4Reddit %s. Copyright (c) %s.', 
+console.log(spf('Bot4reddit %s. Copyright (c) %s.', 
     appcore.getVersion(), appcore.getCopyright()));
 console.log(spf('Learn more at %s', appcore.getSiteUrl()));
 
@@ -51,14 +57,19 @@ try {
     process.exit(1);
 }
 
-// Create Reddit bot
+// Create reddit bot
 var bot = new builder.BotConnectorBot({
-    appId: process.env.APP_ID,
-    appSecret: process.env.APP_SECRET
+    appId: process.env.MICROSOFT_APP_ID,
+    appSecret: process.env.MICROSOFT_APP_SECRET
+});
+
+bot.configure({
+    userWelcomeMessage: 'Hi! Welcome to Bot for Reddit.',
+    goodbyeMessage: 'See ya next time!' 
 });
 
 // Create LUIS dialog
-var model = process.env.LUIS_URL;
+var model = process.env.LUIS_ENDPOINT_URL;
 var dialog = new builder.LuisDialog(model);
 bot.add('/', dialog);
 
@@ -71,28 +82,69 @@ server.listen(process.env.port || appcore.SERVER_PORT, function() {
     logger.info(spf('%s listening on %s', server.name, server.url));
 });
 
+// Display a message when command sent
+// bot.on('reply', function(session) {
+//     var okMessages = [
+//         'OK, lemme look that up for you real quick.',
+//         'Sure! Give me one sec...',
+//         'Coming right up.',
+//         'Sure thing. Half a \'mo.',
+//         'OK, give me just a minute.',
+//         'No problem, coming right up.',
+//         'OK, happy to help.',
+//         'OK, give me just a sec to look that up.',
+//         '10-4. Be right with you.',
+//         'Affirmative. Processing...(*bleep bloop*)',
+//         '\'kay. Lemme grab that for you.'
+//     ];
+    
+//     var okMessage = okMessages[Math.floor(Math.random() * okMessages.length)];
+//     session.send(okMessage); 
+// });
+
 // Handle BrowseSubreddit intent
 dialog.on('BrowseSubreddit', [
-    function(session, args) {
-        var subredditName = appcore.getEntity(args.entities, 'SubredditName');
+    function(session, args) {        
+        var subredditName = appcore.getEntity(args.entities, 'SubredditName').replace(/\/ r \/ /g, '');
         var postPopularity = appcore.getEntity(args.entities, 'PostPopularity');
         var postType = appcore.getEntity(args.entities, 'PostType');
         var timePeriod = appcore.getEntity(args.entities, 'TimePeriod');
-
-        var subredditName   = subredditName.replace(/\s/g, '').toUpperCase();
-        var postPopularity  = postPopularity.toUpperCase();
-        var postType        = postType.toUpperCase();
-        var timePeriod      = timePeriod.toUpperCase();
         
-        logger.debug(spf('Caught BrowseSubreddit intent (entities: %d)',
-            args.entities.length), {
-                'subredditName': subredditName,
-                'postPopularity': postPopularity,
-                'postType': postType,
-                'timePeriod': timePeriod
-            });
+        logger.debug('Caught BrowseSubreddit intent:', {
+            'subredditName': subredditName,
+            'postPopularity': postPopularity,
+            'postType': postType,
+            'timePeriod': timePeriod
+        });
 
-        // session.send('Showing you the ' + postPopularity + ' ' + postType + ' from ' + subredditName + ' for ' + timePeriod);
+        // Fetch posts from requested subreddit
+        if (!subredditName.isEmpty()) {
+            redwrap.r(subredditName).sort(postPopularity).from('year').limit(10, function(error, posts, result) {
+                if (posts.data != null) {
+                    posts.data.children.forEach(function(post, index) {                    
+                        // console.log('  #%d: %s by %s on %s (%d upvotes, %d downvotes) - %s',
+                        //     (index + 1),
+                        //     post.data.title,
+                        //     post.data.author,
+                        //     new Date(post.data.created * 1000).toISOString(),
+                        //     post.data.ups,
+                        //     post.data.downs,
+                        //     post.data.url
+                        // );
+                    });
+                } else {
+                    session.send("Sorry, either I didn't understand the name " +
+                        "of the subreddit you asked for or that subreddit " +
+                        "doesn't exist. Try asking me again, or report the " +
+                        "issue to the developer if the problem persists.");
+                }
+            });           
+        } else {
+            session.send("I'm sorry, but I didn't understand the name of the " +
+                "subreddit you asked for. I am a bot, after all, and I am " +
+                "stupid. Try asking me again, or report the issue to the " +
+                "developer if the problem persists.");              
+        }
     }
 ]);
 
